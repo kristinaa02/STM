@@ -56,7 +56,7 @@ static void MX_TIM2_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-/*void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 	if (GPIO_Pin == GPIO_PIN_0) {
 		if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0)) {
@@ -64,27 +64,17 @@ static void MX_TIM2_Init(void);
 		}
 		else {
 			HAL_TIM_Base_Stop_IT(&htim2);
+			__HAL_TIM_SET_COUNTER(&htim2,0);
 			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
 		}
 	}
-	//ni ovako ne radi, bez dela koda u while petlji
-}*/
+}
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
-	uint16_t current_time;
-
 	if(htim->Instance == TIM2) {
 
-		//timer podesen na 1 tick/ 0.0001s
-		current_time = __HAL_TIM_GET_COUNTER(&htim2);
-
-		if(__HAL_TIM_GET_COUNTER(&htim2) - current_time >= 20000) {
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
-		}
-
-		//podeseno da period interrupt-a bude 2s
-		//HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
 
 	}
 }
@@ -125,12 +115,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-	  if(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0)) {
-		  HAL_TIM_Base_Start_IT(&htim2);
-	  }
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_SET);
+  while (1) {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -198,7 +183,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 7200-1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 65536-1;
+  htim2.Init.Period = 20000-1;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -248,7 +233,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : taster1_Pin */
   GPIO_InitStruct.Pin = taster1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(taster1_GPIO_Port, &GPIO_InitStruct);
 
