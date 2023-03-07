@@ -67,7 +67,7 @@ static void MX_TIM2_Init(void);
 			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
 		}
 	}
-	//ni ovako ne radi
+	//ni ovako ne radi, bez dela koda u while petlji
 }*/
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
@@ -198,7 +198,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 7200-1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 20000-1;
+  htim2.Init.Period = 65536-1;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
